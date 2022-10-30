@@ -1,0 +1,516 @@
+type: edu
+files:
+- name: src/Main.kt
+  visible: true
+  text: |-
+    package encryptdecrypt
+
+    fun main() {
+        val message = readln()
+        val shift = readln().toInt()
+        for (letter in message) {
+            if (letter in 'a'..'z') print(encryption(letter, shift)) else print(letter)
+        }
+    }
+
+    fun encryption(letter: Char, inputShift: Int): Char {
+        val alphabet = 'a'..'z'
+        val shift = (alphabet.indexOf(letter) + inputShift) % alphabet.count()
+        return alphabet.elementAt(shift)
+    }
+  learner_created: false
+- name: test/EncryptDecryptTest.java
+  visible: false
+  text: |
+    import org.hyperskill.hstest.common.FileUtils;
+    import org.hyperskill.hstest.stage.StageTest;
+    import org.hyperskill.hstest.testcase.CheckResult;
+    import org.hyperskill.hstest.testcase.TestCase;
+
+    import java.io.IOException;
+    import java.nio.charset.StandardCharsets;
+    import java.nio.file.Files;
+    import java.nio.file.NoSuchFileException;
+    import java.nio.file.Path;
+    import java.nio.file.Paths;
+    import java.util.List;
+
+    public class EncryptDecryptTest extends StageTest<String> {
+
+        @Override
+        public List<TestCase<String>> generate() {
+            return List.of(
+                new TestCase<String>()
+                    .addArguments(
+                        "-alg", "unicode",
+                        "-mode", "enc",
+                        "-key", "5",
+                        "-in", "in.txt",
+                        "-out", "output.txt"
+                    )
+                    .setAttach("\\jqhtrj%yt%m~ujwxpnqq&")
+                    .addFile("in.txt", "Welcome to hyperskill!"),
+
+                new TestCase<String>()
+                    .addArguments(
+                        "-key", "0",
+                        "-mode", "enc",
+                        "-alg", "unicode",
+                        "-in", "input.txt",
+                        "-out", "output.txt"
+                    )
+                    .setAttach("Hello")
+                    .addFile("input.txt", "Hello"),
+
+                new TestCase<String>()
+                    .addArguments(
+                        "-key", "1",
+                        "-in", "i.txt",
+                        "-alg", "unicode",
+                        "-out", "output.txt",
+                        "-mode", "enc"
+                    )
+                    .setAttach("123456789")
+                    .addFile("i.txt", "012345678"),
+
+                new TestCase<String>()
+                    .addArguments(
+                        "-mode", "dec",
+                        "-in", "input.txt",
+                        "-out", "output.txt",
+                        "-alg", "unicode",
+                        "-key", "5"
+                    )
+                    .setAttach("Welcome to hyperskill!")
+                    .addFile("input.txt", "\\jqhtrj%yt%m~ujwxpnqq&"),
+
+                new TestCase<String>()
+                    .addArguments(
+                        "-mode", "dec",
+                        "-alg", "unicode",
+                        "-key", "0",
+                        "-in", "input.txt",
+                        "-out", "output.txt"
+                    )
+                    .setAttach("Hi")
+                    .addFile("input.txt", "Hi"),
+
+                new TestCase<String>()
+                    .addArguments(
+                        "-mode", "dec",
+                        "-key", "1",
+                        "-in", "input.txt",
+                        "-alg", "unicode",
+                        "-out", "output.txt"
+                    )
+                    .setAttach("111122223333")
+                    .addFile("input.txt", "222233334444"),
+
+                new TestCase<String>()
+                    .addArguments(
+                        "-mode", "enc",
+                        "-key", "5",
+                        "-in", "input.txt",
+                        "-alg", "shift",
+                        "-out", "output.txt"
+                    )
+                    .setAttach("bjqhtrj yt mdujwxpnqq")
+                    .addFile("input.txt", "welcome to hyperskill"),
+
+                new TestCase<String>()
+                    .addArguments(
+                        "-mode", "dec",
+                        "-key", "10",
+                        "-in", "input.txt",
+                        "-alg", "shift",
+                        "-out", "output.txt"
+                    )
+                    .setAttach("treasure")
+                    .addFile("input.txt", "dbokcebo"),
+
+                new TestCase<String>()
+                    .addArguments(
+                        "-mode", "enc",
+                        "-key", "12",
+                        "-in", "input.txt",
+                        "-alg", "shift",
+                        "-out", "output.txt"
+                    )
+                    .setAttach("cphpchdjcijdjibhdjebhjucspucmdmudbnuccup")
+                    .addFile("input.txt", "qdvdqvrxqwxrxwpvrxspvxiqgdiqarairpbiqqid"),
+
+                new TestCase<String>()
+                    .addArguments(
+                        "-mode", "dec",
+                        "-key", "10",
+                        "-in", "input.txt",
+                        "-alg", "shift",
+                        "-out", "output.txt"
+                    )
+                    .setAttach("y")
+                    .addFile("input.txt", "i"),
+
+                new TestCase<String>()
+                    .addArguments(
+                        "-mode", "enc",
+                        "-key", "10",
+                        "-in", "input.txt",
+                        "-alg", "shift",
+                        "-out", "output.txt"
+                    )
+                    .setAttach("i")
+                    .addFile("input.txt", "y")
+            );
+        }
+
+        @Override
+        public CheckResult check(String reply, String clue) {
+            String fileName = "output.txt";
+            String output;
+
+            try {
+                Path path = Paths.get(FileUtils.CURRENT_DIR + fileName);
+                output = Files.readString(path, StandardCharsets.UTF_8);
+            } catch (NoSuchFileException e) {
+                return new CheckResult(false, "File output.txt not found!");
+            } catch (IOException e) {
+                return new CheckResult(false, "Cannot read from file!");
+            }
+
+            if (!output.trim().equals(clue.trim())) {
+                return new CheckResult(false, "Wrong result in the file!");
+            }
+
+            return new CheckResult(true);
+        }
+
+    }
+  learner_created: false
+- name: src/words_sequence.txt
+  visible: true
+  text: |-
+    assembly
+    secular
+    unfortunate
+    tumour
+    restoration
+    headline
+    fastidious
+    helicopter
+    theater
+    ignorance
+    deficit
+    critical
+    damage
+    recognize
+    blank
+    formula
+    experienced
+    stroke
+    convenience
+    braid
+    attic
+    applied
+    reporter
+    court
+    pound
+    friendly
+    wealth
+    match
+    community
+    government
+    freighter
+    church
+    recording
+    civilian
+    undermine
+    banner
+    visual
+    producer
+    abbey
+    image
+    sample
+    convince
+    product
+    rotate
+    quarrel
+    sensitivity
+    beneficiary
+    important
+    leaflet
+    rainbow
+    valid
+    colorful
+    laser
+    dramatic
+    snail
+    referral
+    happen
+    recruit
+    approval
+    guitar
+    discreet
+    difficulty
+    transmission
+    thigh
+    agreement
+    smart
+    cream
+    beautiful
+    choose
+    wound
+    appendix
+    undress
+    disclose
+    unanimous
+    vague
+    reduce
+    detail
+    condition
+    factor
+    misery
+    consultation
+    locate
+    disaster
+    shelf
+    receipt
+    fabricate
+    clique
+    helmet
+    ridge
+    proportion
+    ministry
+    prevalence
+    concentrate
+    twitch
+    resist
+    drive
+    disco
+    bitch
+    embrace
+    insurance
+    opposite
+    minimize
+    shiver
+    scramble
+    tasty
+    insert
+    camera
+    stroll
+    precision
+    rebellion
+    consciousness
+    bless
+    compound
+    virgin
+    dozen
+    governor
+    delay
+    state
+    straight
+    exile
+    palace
+    encourage
+    revive
+    store
+    pedestrian
+    director
+    hilarious
+    sacred
+    lover
+    torch
+    survey
+    volcano
+    supply
+    dimension
+    listen
+    indirect
+    lease
+    advice
+    rhetoric
+    perform
+    behave
+    flash
+    partner
+    nationalist
+    slogan
+    fraction
+    chance
+    terrace
+    degree
+    carpet
+    salvation
+    extract
+    secretary
+    moving
+    sport
+    situation
+    distribute
+    challenge
+    animal
+    stick
+    harvest
+    child
+    stress
+    shallow
+    suspicion
+    separate
+    engine
+    current
+    password
+    shine
+    drama
+    diplomat
+    mother
+    romantic
+    reflection
+    excavate
+    slide
+    sheep
+    theory
+    identity
+    relieve
+    origin
+    jealous
+    traction
+    viable
+    arrow
+    eject
+    rubbish
+    launch
+    means
+    authorise
+    hallway
+    harmony
+    depend
+    catch
+    stomach
+    decide
+    horoscope
+    consideration
+    cycle
+    counter
+    fragrant
+    person
+    contradiction
+    learn
+    relation
+    courtesy
+    stunning
+    copyright
+    denial
+    troop
+    family
+    courage
+    elaborate
+    motivation
+    routine
+    society
+    construct
+    sleeve
+    weave
+    slice
+    thoughtful
+    revise
+    offend
+    nerve
+    hobby
+    justice
+    cattle
+    fascinate
+    episode
+    sense
+    poetry
+    assume
+    dominate
+    voucher
+    ambiguous
+    talented
+    forge
+    venture
+    ceremony
+    business
+    agriculture
+    agony
+    build
+    imposter
+    record
+    porter
+    kitchen
+    siege
+    insight
+    continuation
+    packet
+    recover
+    ignorant
+    harmful
+    movie
+    trend
+    tumble
+    break in
+    interference
+    scheme
+    genuine
+    ratio
+    season
+    coast
+    clash
+    bulletin
+    toast
+    infection
+    other
+    safari
+    tissue
+    sleep
+    memorial
+    stake
+    overall
+    import
+    different
+    grief
+    socialist
+    welfare
+    supplementary
+    distort
+    grimace
+    defend
+    central
+    spill
+    definite
+    water
+    stride
+    elect
+    contain
+    criticism
+    formation
+    exploration
+    philosophy
+    salmon
+    avant-garde
+    offensive
+  learner_created: true
+- name: src/text.txt
+  visible: true
+  text: Two exquisite objection delighted deficient yet its contained. Cordial because
+    are account evident its subject but eat. Can properly, followed learning prepared
+    you doubtful yet him. Over many our good lady feet ask that. Expenses own moderate
+    day fat trifling stronger sir domestic feelings. Itself at be answer always exeter
+    up do. Though or my plenty uneasy do. Friendship so considered remarkably be to
+    sentiments. Offered mention greater fifteen one promise because nor. Why denoting
+    speaking fat indulged saw dwelling raillery. Do play they miss give so up. Words
+    to up style of since world. We leaf to snug on no need. Way own uncommonly travelling,
+    now acceptance bed compliment solicitude. Dissimilar admiration so terminated
+    no in contrasted it. Advantages entreaties mr he apartments do. Limits far yet
+    turned highly repair parish talked six. Draw fond rank form nor the day eat.
+  learner_created: true
+- name: output.txt
+  visible: true
+  text: 111122223333
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/21971#comment
+status: Solved
+feedback:
+  message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">JetBrains
+    Academy</a> to continue learning.
+  time: Sun, 30 Oct 2022 11:57:14 UTC
+record: -1
